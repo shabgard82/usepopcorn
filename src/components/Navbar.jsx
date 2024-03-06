@@ -7,7 +7,7 @@ const Navbar = (movies) => {
     <nav className="nav-bar">
       <Logo />
       <Search />
-      <NumResault />
+      <NumResault movies={movies} />
     </nav>
   );
 };
