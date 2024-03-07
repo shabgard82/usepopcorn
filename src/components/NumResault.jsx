@@ -1,7 +1,7 @@
 const NumResault = ({ movies }) => {
   return (
     <p className="num-results">
-      Found <strong> {movies.movies.length} </strong>resaults
+      Found <strong> {movies.length} </strong>resaults
     </p>
   );
 };
