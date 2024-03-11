@@ -8,6 +8,8 @@ import NumResault from "./components/NumResault";
 import { MovieList } from "./components/MovieList";
 import { WatchedList } from "./components/WatchedList";
 import { Summary } from "./components/Summary";
+import { Loader } from "./components/Loader";
+import { ErrorMessage } from "./components/ErrorMessage";
 
 const tempMovieData = [
   {
@@ -59,24 +61,55 @@ const tempWatchedData = [
 const key = "51fe1286";
 
 export default function App() {
+  const [query, setQuery] = useState("inception");
   const [movies, setMovies] = useState([]);
   const [watchMovies, setWatchMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  useEffect(function () {
-    fetch(`http://www.omdbapi.com/?apikey=${key}&s=interstellar`)
-      .then((res) => res.json())
-      .then((data) => setMovies(data.Search));
-  }, []);
+  useEffect(
+    function () {
+      async function FetchMovies() {
+        try {
+          setIsLoading(true);
+          setError("");
+          const res = await fetch(
+            `http://www.omdbapi.com/?apikey=${key}&s=${query}`
+          );
+          if (!res.ok)
+            throw new Error("something went wrong whith fetching movies");
+          const data = await res.json();
+          if (data.Response === "False") throw new Error("movie not found");
+          setMovies(data.Search);
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+
+      if (query.length < 3) {
+        setMovies([]);
+        setError("");
+        return;
+      }
+
+      FetchMovies();
+    },
+    [query]
+  );
 
   return (
     <>
       <Navbar>
-        <Search />
+        <Search query={query} setQuery={setQuery} />
         <NumResault movies={movies} />
       </Navbar>
       <Main>
         <ListBox>
-          <MovieList movies={movies} />
+          {isLoading && <Loader />}
+          {!isLoading && !error && <MovieList movies={movies} />}
+          {error && <ErrorMessage message={error} />}
         </ListBox>
         <ListBox>
           <Summary watchMovies={watchMovies} />
