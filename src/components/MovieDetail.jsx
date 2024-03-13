@@ -3,7 +3,13 @@ import StarRating from "./StarRating";
 import { Loader } from "./Loader";
 
 const key = "51fe1286";
-const MovieDetail = ({ selectedId, handleCloseIcon }) => {
+const MovieDetail = ({
+  selectedId,
+  handleCloseIcon,
+  handleAddMovie,
+  watchMovies,
+}) => {
+  const [userRating, setUserRating] = useState();
   const [movie, setMovie] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const {
@@ -18,6 +24,25 @@ const MovieDetail = ({ selectedId, handleCloseIcon }) => {
     Director: director,
     Genre: genre,
   } = movie;
+
+  const isWatch = watchMovies.map((movie) => movie.imdbID).includes(selectedId);
+  const watchUserRating = watchMovies.find(
+    (movie) => movie.imdbID === selectedId?.userRating
+  );
+
+  const handleAddToList = () => {
+    const newMovies = {
+      imdbID: selectedId,
+      title,
+      year,
+      poster,
+      imdbRating: Number(imdbRating),
+      runtime: Number(runtime.split(" ").at(0)),
+      userRating,
+    };
+    handleAddMovie(newMovies);
+    handleCloseIcon();
+  };
 
   useEffect(
     function () {
@@ -35,6 +60,17 @@ const MovieDetail = ({ selectedId, handleCloseIcon }) => {
     [selectedId]
   );
 
+  useEffect(
+    function () {
+      if (!title) return;
+      document.title = `Movies - ${title}`;
+      return function () {
+        document.title = "Night Movies";
+      };
+    },
+    [title]
+  );
+
   return (
     <div className="details">
       {isLoading ? (
@@ -43,7 +79,16 @@ const MovieDetail = ({ selectedId, handleCloseIcon }) => {
         <>
           <header>
             <button className="btn-back" onClick={handleCloseIcon}>
-              &larr;
+              <i
+                class="fa fa-arrow-left"
+                style={{
+                  fontSize: "20px",
+                  color: "black",
+                  fontWeight: "900px",
+                }}
+              >
+                &larr;
+              </i>
             </button>
             <img src={poster} alt={`poster of ${movie} movie`} />
             <div className="details-overview">
@@ -61,18 +106,31 @@ const MovieDetail = ({ selectedId, handleCloseIcon }) => {
           </header>
           <section>
             <div className="rating">
-              <StarRating maxRating={10} size={24} />
+              {!isWatch ? (
+                <>
+                  <StarRating
+                    maxRating={10}
+                    size={24}
+                    onSetRating={setUserRating}
+                  />
+                  {userRating > 0 && (
+                    <button className="btn-add" onClick={handleAddToList}>
+                      + Add to list
+                    </button>
+                  )}
+                </>
+              ) : (
+                <p>You rated this movie{watchUserRating}</p>
+              )}
             </div>
             <p>
               <em>{plot}</em>
             </p>
             <p>star rating {actors}</p>
             <p>direct by {director}</p>
-            <p>year {year}</p>
           </section>
         </>
       )}
-      {selectedId}
     </div>
   );
 };

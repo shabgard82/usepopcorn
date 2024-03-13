@@ -1,17 +1,16 @@
-const Star = ({ onClick, full, onHoverIn, onHoverOut, color, size }) => {
-  const StarStyle = {
+function Star({ onRate, full, onHoverIn, onHoverOut, color, size }) {
+  const starStyle = {
     width: `${size}px`,
-    hight: `${size}px`,
+    height: `${size}px`,
     display: "block",
     cursor: "pointer",
-    color,
-    fontSize: `${size / 1.5}px`,
   };
+
   return (
     <span
       role="button"
-      style={StarStyle}
-      onClick={onClick}
+      style={starStyle}
+      onClick={onRate}
       onMouseEnter={onHoverIn}
       onMouseLeave={onHoverOut}
     >
@@ -41,6 +40,5 @@ const Star = ({ onClick, full, onHoverIn, onHoverOut, color, size }) => {
       )}
     </span>
   );
-};
-
+}
 export default Star;
