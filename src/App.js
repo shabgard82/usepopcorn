@@ -15,7 +15,7 @@ import MovieDetail from "./components/MovieDetail";
 const key = "51fe1286";
 
 export default function App() {
-  const [query, setQuery] = useState("inception");
+  const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
   const [watchMovies, setWatchMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -66,7 +66,7 @@ export default function App() {
         setError("");
         return;
       }
-
+      handleCloseIcon();
       FetchMovies();
     },
     [query]
