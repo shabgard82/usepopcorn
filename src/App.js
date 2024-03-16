@@ -17,10 +17,22 @@ const key = "51fe1286";
 export default function App() {
   const [query, setQuery] = useState("inception");
   const [movies, setMovies] = useState([]);
-  const [watchMovies, setWatchMovies] = useState([]);
+  // const [watchMovies, setWatchMovies] = useState([]);
+  const [watchMovies, setWatchMovies] = useState(function () {
+    const storedValue = localStorage.getItem("watchMovies");
+    return JSON.parse(storedValue);
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedId, setSelectedId] = useState(null);
+
+  // save data in local storage
+  useEffect(
+    function () {
+      localStorage.setItem("watchMovies", JSON.stringify(watchMovies));
+    },
+    [watchMovies]
+  );
 
   const handleClickMovies = (id) => {
     setSelectedId((selectedId) => (id === selectedId ? null : id));
