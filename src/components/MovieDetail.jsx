@@ -9,7 +9,7 @@ const MovieDetail = ({
   handleAddMovie,
   watchMovies,
 }) => {
-  const [userRating, setUserRating] = useState();
+  const [userRating, setUserRating] = useState("");
   const [movie, setMovie] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const {
@@ -27,8 +27,8 @@ const MovieDetail = ({
 
   const isWatch = watchMovies.map((movie) => movie.imdbID).includes(selectedId);
   const watchUserRating = watchMovies.find(
-    (movie) => movie.imdbID === selectedId?.userRating
-  );
+    (movie) => movie.imdbID === selectedId
+  )?.userRating;
 
   const handleAddToList = () => {
     const newMovies = {
@@ -69,6 +69,17 @@ const MovieDetail = ({
       };
     },
     [title]
+  );
+
+  useEffect(
+    function () {
+      document.addEventListener("keydown", function (e) {
+        if (e.code === "Escape") {
+          handleCloseIcon();
+        }
+      });
+    },
+    [handleCloseIcon]
   );
 
   return (
@@ -120,7 +131,10 @@ const MovieDetail = ({
                   )}
                 </>
               ) : (
-                <p>You rated this movie{watchUserRating}</p>
+                <p>
+                  You rated this movie {watchUserRating}
+                  <span>⭐️</span>
+                </p>
               )}
             </div>
             <p>
