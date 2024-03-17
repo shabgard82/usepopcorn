@@ -1,3 +1,7 @@
 export const ErrorMessage = ({ message }) => {
-  return <div className="error">{message}</div>;
+  return (
+    <div className="error">
+      <span>⛔️</span> {message}
+    </div>
+  );
 };

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import StarRating from "./StarRating";
 import { Loader } from "./Loader";
+import { useKey } from "./custom-hook/useKey";
 
 const key = "51fe1286";
 const MovieDetail = ({
@@ -70,18 +71,7 @@ const MovieDetail = ({
     },
     [title]
   );
-
-  useEffect(
-    function () {
-      document.addEventListener("keydown", function (e) {
-        if (e.code === "Escape") {
-          handleCloseIcon();
-        }
-      });
-    },
-    [handleCloseIcon]
-  );
-
+  useKey("escape", handleCloseIcon);
   return (
     <div className="details">
       {isLoading ? (
